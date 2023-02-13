@@ -1,7 +1,7 @@
 #Ref: https://realpython.com/python-sockets/
 import socket
 
-HOST = "10.0.0.160"  # The server's hostname or IP address
+HOST = "127.0.0.1"  # The server's hostname or IP address
 PORT = 2048  # The port used by the server
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
