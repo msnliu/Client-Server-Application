@@ -2,7 +2,7 @@
 
 import socket
 
-HOST = '10.0.0.160'
+HOST = '127.0.0.1'
 PORT = 2048
 #update firewall for TCP traffic on port 2048
 
