@@ -89,7 +89,7 @@ def threaded(c):
 
 def Main():
 
-    host = "10.0.0.160"
+    host = "127.0.0.1"
  
     # reserve a port on your computer
     # in our case it is 12345 but it
