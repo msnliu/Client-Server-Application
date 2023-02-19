@@ -4,22 +4,16 @@ import socket
 import mysql.connector
 import random
 
- 
+import re
+
 # import thread module
 from _thread import *
 import threading
 
 accountName_table={}
-accountBalance_table={}
+accountMsg_table={}
 
 p_lock = threading.Lock()
-
-def create_account():
-    
-    print("random")
-
-
-
 
 # thread function
 def threaded(c):
@@ -28,63 +22,94 @@ def threaded(c):
         # data received from client
         data = c.recv(1024)
         data_str = data.decode('UTF-8')
+        
         if not data:
             print('Bye')
             break
+        # print user input
         print(data_str+"\n")
-        #data_str = str(data)
+        
+        # parse user input
         data_list = data_str.split('|')
         opcode = data_list[0]
-        #opcode = opcode_b[2:]
+        
         print("Opcode:" + str(opcode))
 
         if opcode == '1':
             #account creation
+
             accountID  = str(random.randint(0,1000))
             accountName_table[accountID] = str(data_list[1])
-            accountBalance_table[accountID] = str(0)
+            accountMsg_table[accountID] = []
             print("key: " + str(accountID) + "\n")
-            data = "Account ID: " + str(accountID)+"\n"
+            data = "Account ID: " + str(accountID) + "\n"
+            
         elif opcode == '2':
-            #deposit money
+            #list accounts
+            # will not show account id and messages
 
-            accountID = str(data_list[1])
+            accountPre = str(data_list[1])
             print("key: " + str(data_list[1]) + "\n")
-            if accountID in accountName_table:
-                print("key exists: " + str(accountID) + " old balance:"+  str(accountBalance_table[accountID]) + "\n")
-                balance = accountBalance_table[accountID]
-                accountBalance_table[accountID] = str(int(balance) + int(data_list[2]))
-                data = "Account ID: " +  str(accountID) + " New Balance: "+  str(accountBalance_table[accountID]) +"\n"
+            
+            regex = re.compile(accountPre)
+            matches = [string for string in [val for _, val in accountName_table.items()] if re.match(regex, string)]
+
+            if len(matches):
+                
+                for m in range(len(matches)):
+                    print("Account matched: " + matches[m] + "\n")
+
+                data = "Account matched: " + ','.join(matches) +"\n"
+
+            # matching account doesn't exist, no account ID is associated
             else:
-                print("key doesnt exist: " + str(accountID)  + "\n")
-                data = "Account ID: " +  str(accountID) + " doesn't exist \n"
+                print("Account matched doesnt exist: " + str(accountPre)  + "\n")
+                data = "Account matched to: " +  str(accountPre) + " doesn't exist \n"
+
         elif opcode == '3':
-            #withdraw money
-            accountID = str(data_list[1])
-            print("key: " + str(data_list[1]) + "\n")
-            if accountID in accountName_table:
-                print("key exists: " + str(accountID) + " old balance:"+  str(accountBalance_table[accountID]) + "\n")
-                balance = accountBalance_table[accountID]
-                tempBalance = int(balance) - int(data_list[2])
-                if tempBalance >0:
-                    accountBalance_table[accountID] = str(tempBalance)
-                    data = "Account ID: " +  str(accountID) + " New Balance: "+  str(accountBalance_table[accountID]) +"\n"
+            #Send a message to a recipient
+
+            sender = accountName_table[data_list[1]]
+            print("Sender: " + str(sender) + "\n")
+
+            receiver = data_list[2]
+            
+            if receiver in accountName_table.values():
+                
+                print("receiver found: " + str(receiver) + "\n")
+                
+                for id, name in accountName_table.items():
+                    if name == receiver:
+                        rscv_ID = id
+
+                msg = data_list[3]
+                # If the recipient is logged in, deliver immediately; otherwise queue the message and deliver on demand?
+                if # online:
+                    accountMsg_table[rscv_ID].append(msg)
+                    print("Sender: " +  str(sender) + " sends a new message to: "+  str(receiver) + "\n")
+                    data = "Sender: " +  str(sender) + " sends: "+  str(msg) + "\n"
                 else:
-                    data = "Account ID: " +  str(accountID) + " balance too low!" + "\n"
+                    # queue the message
+
             else:
-                print("key doesnt exist: " + str(accountID)  + "\n")
-                data = "Account ID: " +  str(accountID) + " doesn't exist \n"
+                print("Receiver doesnt exist: " + str(receiver)  + "\n")
+                data = "Receiver: " +  str(receiver) + " doesn't exist \n"
+
         elif opcode == '4':
-            #view balance
+            #Delete an account
+
             accountID = data_list[1]
-            data = "Account ID: " +  str(accountID) + " New Balance: " + str(accountBalance_table[accountID]) +"\n"
+            del accountMsg_table[accountID]
+            del accountMsg_table[accountID]
+            data = "Account ID: " +  str(accountID) + " has been deleted" + "\n"
+
         else:
             data = "Invalid Request\n"
 
         # send back reversed string to client
         c.send(data.encode('ascii')) 
-    # connection closed
     
+    # connection closed
     c.close()
 
 def Main():
