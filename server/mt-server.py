@@ -1,7 +1,7 @@
 #Ref: https://www.geeksforgeeks.org/socket-programming-multi-threading-python/
 
 import socket
-import mysql.connector
+# import mysql.connector
 import random
 
 import re
@@ -51,8 +51,8 @@ def threaded(c):
             accountPre = str(data_list[1])
             print("key: " + str(data_list[1]) + "\n")
             
-            regex = re.compile(accountPre)
-            matches = [string for string in [val for _, val in accountName_table.items()] if re.match(regex, string)]
+            # regex = re.compile(accountPre)
+            matches = [string for string in [val for _, val in accountName_table.items()] if re.search(accountPre, string)]
 
             if len(matches):
                 
@@ -84,12 +84,13 @@ def threaded(c):
 
                 msg = data_list[3]
                 # If the recipient is logged in, deliver immediately; otherwise queue the message and deliver on demand?
-                if # online:
+                if True: # online
                     accountMsg_table[rscv_ID].append(msg)
                     print("Sender: " +  str(sender) + " sends a new message to: "+  str(receiver) + "\n")
                     data = "Sender: " +  str(sender) + " sends: "+  str(msg) + "\n"
                 else:
                     # queue the message
+                    pass
 
             else:
                 print("Receiver doesnt exist: " + str(receiver)  + "\n")
