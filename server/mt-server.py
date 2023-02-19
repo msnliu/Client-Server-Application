@@ -47,12 +47,12 @@ def threaded(c):
         elif opcode == '2':
             #list accounts
             # will not show account id and messages
-
             accountPre = str(data_list[1])
+            rematch = "^" + accountPre + "$"
             print("key: " + str(data_list[1]) + "\n")
             
-            # regex = re.compile(accountPre)
-            matches = [string for string in [val for _, val in accountName_table.items()] if re.search(accountPre, string)]
+            regex = re.compile(rematch)
+            matches = [string for string in [val for _, val in accountName_table.items()] if re.match(regex, string)]
 
             if len(matches):
                 
@@ -122,6 +122,7 @@ def Main():
     # can be anything
     port = 2048
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s.bind((host, port))
     print("socket binded to port", port)
  
