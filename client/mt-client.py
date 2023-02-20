@@ -13,7 +13,7 @@ def Main():
 	s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 	port = 2048
 	s.connect((host,port))
-
+		
 	def sender():
 		while True:
 		# message sent to server

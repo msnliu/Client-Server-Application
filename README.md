@@ -10,6 +10,8 @@ To run the client:
 Wire Protocol:
 
 
+Op '0' = Account Login, e.g. 0|123 --> returns accountID 
+
 Op '1' = Account Creation, e.g. 1|John --> returns accountID 
 
 
