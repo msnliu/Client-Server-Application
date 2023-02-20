@@ -3,7 +3,7 @@
 import socket
 # import mysql.connector
 import random
-
+from user import User
 import re
 
 # import thread module
@@ -11,8 +11,11 @@ from _thread import *
 import threading
 
 accountName_table={}
-accountMsg_table={}
-connections = {}
+# accountMsg_table={}
+name_list = []
+connections = {} # id to connections
+connections_id = {}
+flag = 1
 
 p_lock = threading.Lock()
 
@@ -36,13 +39,23 @@ def threaded(c):
         
         print("Opcode:" + str(opcode))
 
-        if opcode == '1':
+        if opcode == '0':
+            if(str(data_list[1]) in accountName_table.keys()):
+                user = accountName_table[str(data_list[1])]
+                user.active = True
+                print(f'user : {user.name} is now logged in')
+            else:
+                print(f'user with ID : {data_list[1]} is not recognized in the system, please try a different name or create a new one')
+        elif opcode == '1':
             #account creation
-            accountID  = str(random.randint(0,1000))
-            accountName_table[accountID] = str(data_list[1])
-            accountMsg_table[accountID] = []
+            new_user = User(str(data_list[1]))
+            name_list.append(str(data_list[1]))
+            accountID = str(new_user.ID)
+            accountName_table[accountID] = new_user
+            # accountMsg_table[accountID] = []
             connections[accountID] = c
-            print("key: " + str(accountID) + "\n")
+            connections_id[c] = accountID
+            print("New User created. key: " + str(accountID) + "\n")
             data = "Account ID: " + str(accountID) + "\n"
             c.send(data.encode('ascii')) 
             
@@ -53,7 +66,7 @@ def threaded(c):
             print("key: " + str(data_list[1]) + "\n")
             
             regex = re.compile(rematch)
-            matches = [string for string in [val for _, val in accountName_table.items()] if re.match(regex, string)]
+            matches = [string for string in [val.name for _, val in accountName_table.items()] if re.match(regex, string)]
 
             if len(matches):
                 
@@ -73,23 +86,21 @@ def threaded(c):
 
             receiver = data_list[1]
             
-            if receiver in accountName_table.values():
+            if receiver in name_list:
                 
-                for id, name in accountName_table.items():
-                    if name == receiver:
-                        rscv_ID = id
+                for id, user in accountName_table.items():
+                    if user.name == receiver:
+                        rscv_ID = str(user.ID)
 
-                for id, con in connections.items():
-                    if con == c:
-                        sender = accountName_table[id]
+                sender = accountName_table[connections_id[c]]
 
                 client = connections[rscv_ID]
                 msg = data_list[2]
                 
                 # try:
-                message = str(sender) + " sends: "+  str(msg) + "\n"
+                message = str(sender.name) + " sends: "+  str(msg) + "\n"
                 client.send(message.encode('ascii'))
-                print("Sender " +  str(sender) + " sends a new message " + str(msg) + " to " + str(receiver) + "\n")
+                print("Sender " +  str(sender.name) + " sends a new message " + str(msg) + " to " + str(receiver) + "\n")
                 # except:
                 #     client.close()
                 #     del connections[rscv_ID]
@@ -99,11 +110,13 @@ def threaded(c):
                 data = "Receiver: " +  str(receiver) + " doesn't exist \n"
                 c.send(data.encode('ascii'))
 
-        elif opcode == '4':
+        elif opcode == '5':
             #Delete an account
             accountID = data_list[1]
-            del accountMsg_table[accountID]
-            del accountMsg_table[accountID]
+            name = accountName_table[accountID].name
+            name_list.remove(name)
+            del connections[accountID]
+            del accountName_table[accountID]
             data = "Account ID: " +  str(accountID) + " has been deleted" + "\n"
             c.send(data.encode('ascii')) 
 
@@ -112,6 +125,8 @@ def threaded(c):
             c.send(data.encode('ascii'))
     
     # connection closed
+    user = accountName_table[connections_id[c]]
+    user.active = False
     c.close()
 
 def Main():
