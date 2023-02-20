@@ -15,7 +15,6 @@ accountName_table={}
 name_list = []
 connections = {} # id to connections
 connections_id = {}
-flag = 1
 
 p_lock = threading.Lock()
 
@@ -28,7 +27,9 @@ def threaded(c):
         data_str = data.decode('UTF-8')
         
         if not data:
-            print('Bye')
+            userid = connections_id[c]
+            username = accountName_table[userid].name
+            print(username + " has logged out of the system\n")
             break
         # print user input
         print(data_str+"\n")
@@ -43,9 +44,13 @@ def threaded(c):
             if(str(data_list[1]) in accountName_table.keys()):
                 user = accountName_table[str(data_list[1])]
                 user.active = True
-                print(f'user : {user.name} is now logged in')
+                old_c = connections[str(data_list[1])]
+                del connections_id[old_c]
+                connections[str(data_list[1])] = c
+                connections_id[c] = str(data_list[1])
+                print(f'user : {user.name} is now logged in\n')
             else:
-                print(f'user with ID : {data_list[1]} is not recognized in the system, please try a different name or create a new one')
+                print(f'user with ID : {data_list[1]} is not recognized in the system, please try a different name or create a new one\n')
         elif opcode == '1':
             #account creation
             new_user = User(str(data_list[1]))
@@ -81,6 +86,20 @@ def threaded(c):
                 data = "Account matched to: " +  str(accountPre) + " doesn't exist \n"
             c.send(data.encode('ascii')) 
 
+        elif opcode == '4':
+            accountID = connections_id[c]
+            user = accountName_table[accountID]
+            q = user.queue
+            
+            if q:
+                data = ""
+                while q:
+                    new_msg = q.pop(0)
+                    data += new_msg + "\n"
+            else:
+                data = "No new messages\n"
+            c.send(data.encode('ascii'))
+
         elif opcode == '3':
             #Send a message to a recipient
 
@@ -92,18 +111,20 @@ def threaded(c):
                     if user.name == receiver:
                         rscv_ID = str(user.ID)
 
-                sender = accountName_table[connections_id[c]]
+                sender = accountName_table[connections_id[c]].name
 
                 client = connections[rscv_ID]
                 msg = data_list[2]
                 
-                # try:
-                message = str(sender.name) + " sends: "+  str(msg) + "\n"
-                client.send(message.encode('ascii'))
-                print("Sender " +  str(sender.name) + " sends a new message " + str(msg) + " to " + str(receiver) + "\n")
-                # except:
-                #     client.close()
-                #     del connections[rscv_ID]
+                message = str(sender) + " sends: "+  str(msg) + "\n"
+                if accountName_table[rscv_ID].active:
+                    c.send("message delivered\n".encode('ascii'))
+                    client.send(message.encode('ascii'))
+                    print("Sender " +  str(sender) + " sends a new message " + str(msg) + " to " + str(receiver) + "\n")
+                else:
+                    c.send("message delivered to mailbox\n".encode('ascii'))
+                    accountName_table[rscv_ID].queue.append(message)
+                    print("message from " + sender + " has been delivered to " + receiver + "'s mailbox\n")
 
             else:
                 print("Receiver doesnt exist: " + str(receiver)  + "\n")
@@ -113,11 +134,22 @@ def threaded(c):
         elif opcode == '5':
             #Delete an account
             accountID = data_list[1]
-            name = accountName_table[accountID].name
-            name_list.remove(name)
-            del connections[accountID]
-            del accountName_table[accountID]
-            data = "Account ID: " +  str(accountID) + " has been deleted" + "\n"
+            user = accountName_table[accountID]
+            name = user.name
+            q = user.queue
+            l = len(data_list)
+            if q and l == 2:
+                data = "Please check your mailbox before deleting your account! If you would like to delete immediately, please try again by adding |f after optcode 5\n"
+                c.send(data.encode('ascii')) 
+                continue
+            else:
+                name_list.remove(name)
+                del connections[accountID]
+                del connections_id[c]
+                del accountName_table[accountID]
+            
+            print("Account ID: " +  str(accountID) + " has been deleted" + "\n")
+            data = "Your account has been deleted\n"
             c.send(data.encode('ascii')) 
 
         else:
@@ -156,7 +188,7 @@ def Main():
         # Start a new thread and return its identifier
         start_new_thread(threaded, (c,))
         
-    s.close()
+    # s.close()
  
  
 if __name__ == '__main__':
