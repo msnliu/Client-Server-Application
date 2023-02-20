@@ -12,6 +12,8 @@ import threading
 
 accountName_table={}
 accountMsg_table={}
+connections = {}
+flag = 1
 
 p_lock = threading.Lock()
 
@@ -37,16 +39,16 @@ def threaded(c):
 
         if opcode == '1':
             #account creation
-
             accountID  = str(random.randint(0,1000))
             accountName_table[accountID] = str(data_list[1])
             accountMsg_table[accountID] = []
+            connections[accountID] = c
             print("key: " + str(accountID) + "\n")
             data = "Account ID: " + str(accountID) + "\n"
+            c.send(data.encode('ascii')) 
             
         elif opcode == '2':
             #list accounts
-            # will not show account id and messages
             accountPre = str(data_list[1])
             rematch = "^" + accountPre + "$"
             print("key: " + str(data_list[1]) + "\n")
@@ -65,50 +67,50 @@ def threaded(c):
             else:
                 print("Account matched doesnt exist: " + str(accountPre)  + "\n")
                 data = "Account matched to: " +  str(accountPre) + " doesn't exist \n"
+            c.send(data.encode('ascii')) 
 
         elif opcode == '3':
             #Send a message to a recipient
 
-            sender = accountName_table[data_list[1]]
-            print("Sender: " + str(sender) + "\n")
-
-            receiver = data_list[2]
+            receiver = data_list[1]
             
             if receiver in accountName_table.values():
-                
-                print("receiver found: " + str(receiver) + "\n")
                 
                 for id, name in accountName_table.items():
                     if name == receiver:
                         rscv_ID = id
 
-                msg = data_list[3]
-                # If the recipient is logged in, deliver immediately; otherwise queue the message and deliver on demand?
-                if True: # online
-                    accountMsg_table[rscv_ID].append(msg)
-                    print("Sender: " +  str(sender) + " sends a new message to: "+  str(receiver) + "\n")
-                    data = "Sender: " +  str(sender) + " sends: "+  str(msg) + "\n"
-                else:
-                    # queue the message
-                    pass
+                for id, con in connections.items():
+                    if con == c:
+                        sender = accountName_table[id]
+
+                client = connections[rscv_ID]
+                msg = data_list[2]
+                
+                # try:
+                message = str(sender) + " sends: "+  str(msg) + "\n"
+                client.send(message.encode('ascii'))
+                print("Sender " +  str(sender) + " sends a new message " + str(msg) + " to " + str(receiver) + "\n")
+                # except:
+                #     client.close()
+                #     del connections[rscv_ID]
 
             else:
                 print("Receiver doesnt exist: " + str(receiver)  + "\n")
                 data = "Receiver: " +  str(receiver) + " doesn't exist \n"
+                c.send(data.encode('ascii'))
 
         elif opcode == '4':
             #Delete an account
-
             accountID = data_list[1]
             del accountMsg_table[accountID]
             del accountMsg_table[accountID]
             data = "Account ID: " +  str(accountID) + " has been deleted" + "\n"
+            c.send(data.encode('ascii')) 
 
         else:
             data = "Invalid Request\n"
-
-        # send back reversed string to client
-        c.send(data.encode('ascii')) 
+            c.send(data.encode('ascii'))
     
     # connection closed
     c.close()
@@ -134,7 +136,7 @@ def Main():
     while True:
  
         # establish connection with client
-        c, addr = s.accept()      
+        c, addr = s.accept()
         print('Connected to :', addr[0], ':', addr[1])
  
         # Start a new thread and return its identifier
