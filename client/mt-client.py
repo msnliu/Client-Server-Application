@@ -10,11 +10,11 @@ import time
 
 def Main():
 	host = "127.0.0.1"
-	s1 = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-	s2 = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+	s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+	# s2 = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 	port = 2048
-	s1.connect((host,port))
-	s2.connect((host, port))
+	s.connect((host,port))
+	# s2.connect((host,port))
 
 	def sender():
 		while True:
@@ -29,17 +29,20 @@ def Main():
 				else:
 					break
 			else:
-				s1.send(ans.encode('ascii'))	
+				s.send(ans.encode('ascii'))	
 				continue
-		s1.close()
+		s.close()
 
 	def receiver():
 		while True:
-			data = s2.recv(1024)
-			# print the received message
-			# here it would be a reverse of sent message
-			if data:
-				print(str(data.decode('ascii')))
+			try:
+				data = s.recv(1024)
+				# print the received message
+				# here it would be a reverse of sent message
+				if data:
+					print(str(data.decode('ascii')))
+			except:
+				break
 
 	sender_thread = threading.Thread(target=sender)
 	receiver_thread = threading.Thread(target=receiver)
