@@ -39,7 +39,6 @@ def list_accounts(pattern):
             print("Account matched: " + matches[m] + "\n")
 
         data = "Account matched: " + ','.join(matches) +"\n"
-
     # matching account doesn't exist, no account ID is associated
     else:
         print("Account matched doesnt exist: " + str(accountPre)  + "\n")
@@ -180,10 +179,9 @@ def threaded(c):
     del connections_id[c]
     c.close()
 
-def Main():
 
+def Main():
     host = "127.0.0.1"
- 
     # reserve a port on your computer
     # in our case it is 12345 but it
     # can be anything
@@ -192,11 +190,9 @@ def Main():
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s.bind((host, port))
     print("socket binded to port", port)
- 
     # put the socket into listening mode
     s.listen(5)
     print("socket is listening")
- 
     # a forever loop until client wants to exit
     while True:
         # establish connection with client
@@ -210,7 +206,5 @@ def Main():
         # Start a new thread and return its identifier
         start_new_thread(threaded, (c,))
     # s.close()
- 
- 
 if __name__ == '__main__':
     Main()
