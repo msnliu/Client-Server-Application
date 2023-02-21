@@ -1,23 +1,57 @@
 #Ref: https://www.geeksforgeeks.org/socket-programming-multi-threading-python/
 
 import socket
-# import mysql.connector
 import random
 from user import User
 import re
-
-# import thread module
 from _thread import *
 import threading
 
-accountName_table={}
-# accountMsg_table={}
-name_list = []
-connections = {} # id to connections
-connections_id = {}
+accountName_table={} # ID to user object
+name_list = [] # Username list
+connections = {} # from id to connections
+connections_id = {}  # from connections to id
+# p_lock = threading.Lock()
+err_msg = 'Please give a valid input as instructed in the documentation'
 
-p_lock = threading.Lock()
+def account_creation(username,c):
+    new_user = User(username)
+    name_list.append(username)
+    accountID = str(new_user.ID)
+    accountName_table[accountID] = new_user
+    # accountMsg_table[accountID] = []
+    connections[accountID] = c
+    connections_id[c] = accountID
+    print("New User created. key: " + str(accountID) + "\n")
+    data = "Success New Account Creation! Your new Account ID: " + str(accountID) + "\n"
+    return data
 
+def list_accounts(pattern):
+    accountPre = str(pattern)
+    rematch = "^" + accountPre + "$"
+    print("key: " + str(pattern) + "\n")
+    
+    regex = re.compile(rematch)
+    matches = [string for string in [val.name for _, val in accountName_table.items()] if re.match(regex, string)]
+
+    if len(matches):
+        
+        for m in range(len(matches)):
+            print("Account matched: " + matches[m] + "\n")
+
+        data = "Account matched: " + ','.join(matches) +"\n"
+
+    # matching account doesn't exist, no account ID is associated
+    else:
+        print("Account matched doesnt exist: " + str(accountPre)  + "\n")
+        data = "Account matched to: " +  str(accountPre) + " doesn't exist \n"
+    return data
+def send_message(id,message):
+    return
+def pop_undelivered(id):
+    return
+def delete_account(id):
+    return
 # thread function
 def threaded(c):
     while True:
@@ -25,80 +59,57 @@ def threaded(c):
         # data received from client
         data = c.recv(1024)
         data_str = data.decode('UTF-8')
-        
+        # Log out
         if not data:
             userid = connections_id[c]
-            username = accountName_table[userid].name
+            user = accountName_table[userid]
+            username = user.name
+            del connections_id[c]
+            del connections[userid]
+            user.active = False
             print(username + " has logged out of the system\n")
             break
         # print user input
         print(data_str+"\n")
-        
         # parse user input
         data_list = data_str.split('|')
         opcode = data_list[0]
-        
         print("Opcode:" + str(opcode))
-
+        # Login
         if opcode == '0':
-            if(str(data_list[1]) in accountName_table.keys()):
-                user = accountName_table[str(data_list[1])]
-                user.active = True
-                old_c = connections[str(data_list[1])]
-                del connections_id[old_c]
-                connections[str(data_list[1])] = c
-                connections_id[c] = str(data_list[1])
-                print(f'user : {user.name} is now logged in\n')
-            else:
-                print(f'user with ID : {data_list[1]} is not recognized in the system, please try a different name or create a new one\n')
+            try:
+                if(str(data_list[1]) in accountName_table.keys()):
+                    user = accountName_table[str(data_list[1])]
+                    user.active = True
+                    connections[str(data_list[1])] = c
+                    connections_id[c] = str(data_list[1])
+                    print(f'user : {user.name} is now logged in\n')
+                    data = f'user : {user.name} is now logged in\n'
+                else:
+                    data = f'user with ID : {data_list[1]} is not recognized in the system, please try a different name or create a new one\n'
+                c.send(data.encode('ascii'))
+            except:
+                c.send(err_msg.encode('ascii'))
         elif opcode == '1':
             #account creation
-            new_user = User(str(data_list[1]))
-            name_list.append(str(data_list[1]))
-            accountID = str(new_user.ID)
-            accountName_table[accountID] = new_user
-            # accountMsg_table[accountID] = []
-            connections[accountID] = c
-            connections_id[c] = accountID
-            print("New User created. key: " + str(accountID) + "\n")
-            data = "Account ID: " + str(accountID) + "\n"
-            c.send(data.encode('ascii')) 
-            
+            try:
+                username = str(data_list[1])
+                data = account_creation(username,c)
+                c.send(data.encode('ascii'))
+            except:
+                c.send(err_msg.encode('ascii'))
         elif opcode == '2':
+            try:
+                if(len(data_list) == 1):
+                    data = "Showing all accounts: " + ','.join(name_list) +"\n"
+                    print("Output all accounts name: " + "\n")
+                else:
+                    data = list_accounts(data_list[1])
+            except:
+                c.send(err_msg.encode('ascii'))
             #list accounts
-            accountPre = str(data_list[1])
-            rematch = "^" + accountPre + "$"
-            print("key: " + str(data_list[1]) + "\n")
-            
-            regex = re.compile(rematch)
-            matches = [string for string in [val.name for _, val in accountName_table.items()] if re.match(regex, string)]
 
-            if len(matches):
-                
-                for m in range(len(matches)):
-                    print("Account matched: " + matches[m] + "\n")
-
-                data = "Account matched: " + ','.join(matches) +"\n"
-
-            # matching account doesn't exist, no account ID is associated
-            else:
-                print("Account matched doesnt exist: " + str(accountPre)  + "\n")
-                data = "Account matched to: " +  str(accountPre) + " doesn't exist \n"
             c.send(data.encode('ascii')) 
-
-        elif opcode == '4':
-            accountID = connections_id[c]
-            user = accountName_table[accountID]
-            q = user.queue
-            
-            if q:
-                data = ""
-                while q:
-                    new_msg = q.pop(0)
-                    data += new_msg + "\n"
-            else:
-                data = "No new messages\n"
-            c.send(data.encode('ascii'))
 
         elif opcode == '3':
             #Send a message to a recipient
@@ -130,7 +141,19 @@ def threaded(c):
                 print("Receiver doesnt exist: " + str(receiver)  + "\n")
                 data = "Receiver: " +  str(receiver) + " doesn't exist \n"
                 c.send(data.encode('ascii'))
-
+        elif opcode == '4':
+            accountID = connections_id[c]
+            user = accountName_table[accountID]
+            q = user.queue
+            
+            if q:
+                data = ""
+                while q:
+                    new_msg = q.pop(0)
+                    data += new_msg + "\n"
+            else:
+                data = "No new messages\n"
+            c.send(data.encode('ascii'))
         elif opcode == '5':
             #Delete an account
             accountID = data_list[1]
@@ -153,12 +176,10 @@ def threaded(c):
             c.send(data.encode('ascii')) 
 
         else:
-            data = "Invalid Request\n"
-            c.send(data.encode('ascii'))
+            c.send(err_msg.encode('ascii'))
     
     # connection closed
-    user = accountName_table[connections_id[c]]
-    user.active = False
+
     c.close()
 
 def Main():
@@ -180,11 +201,14 @@ def Main():
  
     # a forever loop until client wants to exit
     while True:
- 
         # establish connection with client
         c, addr = s.accept()
         print('Connected to :', addr[0], ':', addr[1])
- 
+        # if(c in connections_id.keys()):
+        #     data = accountName_table[connections_id[c]].name + ' > '
+        # else:
+        #     data = "Please Create or login your account "
+        # c.send(data.encode('ascii'))
         # Start a new thread and return its identifier
         start_new_thread(threaded, (c,))
         
