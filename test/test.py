@@ -1,1 +1,3 @@
-from server import mt-server
+import subprocess
+bashCommand = 'cd ~ < ls '
+print(subprocess.check_output(bashCommand, shell=True))
