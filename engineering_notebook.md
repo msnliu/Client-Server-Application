@@ -216,7 +216,7 @@ In terms of complexity, gRPC provides a high-level API for building distributed 
 
 On the other hand, building a custom wire protocol using sockets and threads requires more low-level programming. Developers need to manage connections, message framing, and error handling themselves. This can result in more code and a steeper learning curve, but it also gives developers more control and a deeper understanding of what is happening in the system.
 
-In terms of performance, gRPC is designed to be fast and efficient. It uses binary serialization and compression to reduce the size of messages being sent between the client and server, and it uses HTTP/2 to multiplex requests and responses over a single connection. This can result in better performance and lower latency than a custom wire protocol implemented using sockets and threads.
+In terms of performance, gRPC is designed to be fast and efficient. It uses binary serialization and compression to reduce the size of messages being sent between the client and server, and it uses HTTP/2 to multiplex requests and responses over a single connection. This can result in better performance (real time 0.7s) and lower latency than a custom wire protocol (real time 1.7s) implemented using sockets and threads.
 
 However, it is worth noting that a well-designed custom wire protocol can also be very performant. By carefully managing message framing and using efficient serialization and compression techniques, developers can achieve good performance with a custom wire protocol.
 
