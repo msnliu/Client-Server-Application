@@ -211,3 +211,90 @@ All messages that are received during log off will be prompted once the user log
 Op '5' = Delete Account, e.g. 5| --> Delete Account and quit the client from the chat service
 
 Op 'X' = Logged off. Similar to delete account but the information is kept in the server so that people can still message you, and you can use '0' to relogin.
+
+### Example
+For server and client running on the same system
+
+Note that You do not have to interact with the server, the message below are just automatic feedback based on the client's input. You can also refer the feedback to get an idea on the order of input of two clients if you want to replicate this work.
+
+**Server**
+> $ python3 chatservice_server.py
+<pre>
+INFO:root:Starting server on [::]:50051
+<pre>
+
+**Client 1**
+> $ python client.py 
+
+<pre>
+Welcome to the chatroom! Please log into your account by 0 or create a new account by 1.
+1|wayne
+
+Account wayne has been created!
+
+2|w.yne
+
+Account matched: wayne
+
+3|mason|hello
+
+Recipient is not found!
+
+5|
+
+Your account has been deleted!
+</pre>
+
+**Client 2**
+> $ python client.py 
+
+<pre>
+Welcome to the chatroom! Please log into your account by 0 or create a new account by 1.
+1|mason
+
+Account mason has been created!
+
+X
+
+You have been successfully logged out!
+</pre>
+
+> $ python client.py 
+
+<pre>
+Welcome to the chatroom! Please log into your account by 0 or create a new account by 1.
+1|wayne
+
+Account wayne has been created!
+
+3|mason|hello
+
+Your message has been sent!
+
+3|mason|hey
+
+Your message has been sent!
+
+x
+
+Invalid request, please try again!
+
+X
+
+You have been successfully logged out!
+<pre>
+
+> $ python client.py 
+
+<pre>
+Welcome to the chatroom! Please log into your account by 0 or create a new account by 1.
+0|mason
+
+wayne: hello
+wayne: hey
+You have been successfully logged in!
+
+5|
+
+Your account has been deleted!
+</pre>
