@@ -1,0 +1,4 @@
+Welcome to the chatroom! Please log into your account by 0 or create a new account by 1.
+Invalid request, please try again!
+Account wayne has been created!
+Account matched: wayne

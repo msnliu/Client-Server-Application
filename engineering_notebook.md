@@ -22,7 +22,7 @@ This function is responsible for sending messages to the server.
 It runs in an infinite loop and takes user input as the message.
 It then sends the message to the server using the send() method of the socket object.
 It adds a small delay using time.sleep() to avoid overloading the server with messages.
-If the user input is 'bye' or 'quit', it breaks the loop and shuts down the socket for writing using s.shutdown().
+If the user input is 'bye', it breaks the loop and shuts down the socket for writing using s.shutdown().
 If the user input is anything else, it continues the loop.
 Receiver Function:
 
