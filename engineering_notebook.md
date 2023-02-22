@@ -34,16 +34,12 @@ Threads:
 
 Two threads are created using the Thread() method of the threading module.
 One thread is for the sender function, and the other is for the receiver function.
-Starting Threads
 
 The threads are started using the start() method of the thread object.
-Joining Threads
 
 The threads are joined using the join() method of the thread object.
-Closing the Socket
 
 The socket is closed using the close() method of the socket object.
-Executing the Program
 
 The program is executed only if the script is run as the main module using the __name__ variable.
 
