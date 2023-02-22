@@ -3,7 +3,7 @@ python ../Client/client.py << EOF
 2
 4|mason123
 5|mason123
-2c  
+2|m.son 
 1|mason
 2
 3|nobody|hello
