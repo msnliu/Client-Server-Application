@@ -93,4 +93,9 @@ If the opcode is 5, the method attempts to delete an account by calling the dele
 
 If the opcode is anything other than 0-5, an error message is sent back to the client. (Note that the cases when opcode = 'bye' or 'quit' is handled in the client side)
 
-## testing
+## testing (For both base case and gRPC)
+
+The testing invovled the interaction between client and server.
+the server.sh is responsible for starting the server
+the three clients shell scipts involved pre-defined behaviors of clients (covers all functionality we proposed); the feedback to the clients were then saved in the output.txt for automated check in pytest on the test_base.py file
+We also tested the performance of this code by running the time.sh scripts. It's fair to compare in this way since they all accomplish same behavior. The result is then further saved in time.txt file for both folder.

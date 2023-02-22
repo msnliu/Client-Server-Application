@@ -47,7 +47,7 @@ Op 'bye' = Logged off. Similar to delete account but the information is kept in 
 
 ### Test
 
-In the test fold, first run the server scripts:
+In the test folder, first run the server scripts:
 
 > $ bash server.sh
 
@@ -60,6 +60,12 @@ Finally, run pytest on the test.py
 > $ pytest test.py
 
 Note that if you can the pre-defined instrucitons on client1/2.sh, you also need to change the tests on test.py to make it right.
+
+You can also run the command to time the test scripts
+
+> $ bash time.sh
+
+This will output a file called time.txt, which will be used for performance comparison with the gRPC counterparts.
 
 ### Example
 For server and client running on the same system
