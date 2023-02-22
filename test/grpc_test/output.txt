@@ -1,6 +1,7 @@
 Welcome to the chatroom! Please log into your account by 0 or create a new account by 1.
-mason: hi
 Account wayne has been created!
+Account matched: wayne
+You have been successfully logged out!
 Quitting!
 Welcome to the chatroom! Please log into your account by 0 or create a new account by 1.
 Account mason has been created!

@@ -67,6 +67,8 @@ You can also run the command to time the test scripts
 
 This will output a file called time.txt, which will be used for performance comparison with the gRPC counterparts.
 
+Note that you should not run pytest after time, or you need to restart the server.
+
 ### Example
 For server and client running on the same system
 
