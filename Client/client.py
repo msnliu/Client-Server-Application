@@ -5,7 +5,7 @@
 import threading
 import socket 
 import time
-# import sys
+import sys
 
 
 def Main():
@@ -22,13 +22,14 @@ def Main():
 		# ask the client whether he wants to continue
 			ans = input('\n')
 			if ans == ('bye' or 'quit'):
-				s.send(''.encode('ascii'))	
+				# s.send(''.encode('ascii'))	
 				break
 			else:
 				s.send(ans.encode('ascii'))	
 				time.sleep(0.1)  # add a short delay after sending the data
 				continue
 		s.shutdown(socket.SHUT_WR)  # close the write end of the socket
+		sys.exit()
 
 	def receiver():
 		while True:
@@ -38,9 +39,12 @@ def Main():
 				# here it would be a reverse of sent message
 				if data:
 					print(str(data.decode('ascii')))
+				else:
+					sys.exit()
 			except:
 				break
-		s.close()
+		# s.close()
+		sys.exit()
 
 	sender_thread = threading.Thread(target=sender)
 	receiver_thread = threading.Thread(target=receiver)
@@ -50,6 +54,7 @@ def Main():
 
 	sender_thread.join()
 	receiver_thread.join()
+	s.close()
 
 if __name__ == '__main__':
 	Main()
