@@ -187,9 +187,15 @@ bye
 
 ## Second Implementation (gRPC)
 
+
+
 ### Download
 
-First to generate necessary python files, run the following command under the grpc directory 
+First cd into the grpc directory Then install the necssary dependecy
+
+> $ pip install -r requirment.txt
+
+Then to generate necessary python files, run the following command under the grpc directory 
 
 > $ python3 -m grpc_tools.protoc -Iprotos --python_out=. --grpc_python_out=. protos/chatservice.proto
 
