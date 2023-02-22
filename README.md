@@ -35,17 +35,31 @@ Op '0' = Account Login, e.g. 0|wayne123 --> User with ID wayne123 logged in (nee
 
 Op '1' = Account Creation, e.g. 1|John --> Creates an account with username John, and an ID will be supplemented. (Avoid same user name)
 
-Op '2' = List User, e.g., 2|J.hn --> list of user whose name is J*hn. Or 2 --> list of all users
+Op '2' = List User, e.g., 2|J.hn --> returns list of user whose name is J*hn. Or 2 --> returns list of all users
 
-Op '3'  = Send Message to a particular user, e.g., 3|accountID|hello --> send hello to someone whose id is accountID
+Op '3'  = Send Message to a particular user, e.g., 3|accountID|Amount --> returns updated balance; If the user is not logged in
 
-Op '4' = View undelivered message for a particular account, e.g. 4|accountID --> returns balance
+Op '4' = View underlivered message, e.g. 4|accountID --> View all undelivery message for a user with id accountID when he/she is logged off
 
-Op '5' = delete an account, e.g. 4|accountID --> returns balance
+Op '5' = Delete Account, e.g. 5|accountID --> Delete Account with accountID
+
+Op 'quit' or 'bye' = Logged off. Similar to delete account but the information is kept in the server so that people can still message you, and you can use Op '0' to relogin.
 
 ### Test
 
+In the test fold, first run the server scripts:
 
+> $ bash server.sh
+
+Then run the test scipts which creates two clients and run multiple pre-defined instrucitons, and saved results in the output.txt files
+
+> $ bash test.sh
+
+Finally, run pytest on the test.py
+
+> $ pytest test.py
+
+Note that if you can the pre-defined instrucitons on client1/2.sh, you also need to change the tests on test.py to make it right.
 
 ### Example
 For server and client running on the same system
