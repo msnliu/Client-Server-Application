@@ -1,4 +1,3 @@
-import logging
 from chatservice_pb2 import (
     ChatMessageRequest,
     ChatMessageResponse,

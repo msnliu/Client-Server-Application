@@ -1,6 +1,5 @@
 import logging
 import threading
-import random
 
 import grpc
 from chatservice_pb2 import CreateAccountRequest, WildCardRequest, LogInRequest, LogOutRequest, DeleteAccountRequest, ChatMessageRequest, ChatClient

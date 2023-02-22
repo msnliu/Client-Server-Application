@@ -35,9 +35,9 @@ Op '0' = Account Login, e.g. 0|wayne123 --> User with ID wayne123 logged in (nee
 
 Op '1' = Account Creation, e.g. 1|John --> Creates an account with username John, and an ID will be supplemented. (Avoid same user name, and such format has to be followed and try to aviod adding '|' in the name)
 
-Op '2' = List User, e.g., 2|J.hn --> returns list of user whose name is J*hn. Or 2 --> returns list of all users
+Op '2' = List User, e.g., 2|J.hn --> returns list of user whose name is J*hn. Or 2 --> Returns list of all users
 
-Op '3'  = Send Message to a particular user, e.g., 3|accountID|Amount --> returns updated balance; If the user is not logged in, send message to his mailbox so that they are ready to be deliveried once upon request (will return a note if user does not exist)
+Op '3'  = Send Message to a particular user, e.g., 3|accountID|message --> Send a new message immediately to another account if online (send to mailbox if the other account is offline)
 
 Op '4' = View underlivered message, e.g. 4|accountID --> View all undelivery message for a user with id accountID when he/she is logged off (will return a note if user does not exist)
 
@@ -185,4 +185,35 @@ bye
 
 ## Second Implementation (gRPC)
 
+### Download
 
+First to generate necessary python files, run the following command under the grpc directory 
+
+> $ python3 -m grpc_tools.protoc -Iprotos --python_out=. --grpc_python_out=. protos/chatservice.proto
+
+### Run
+Once you are in the directory where `chatservice_pb2_grpc.py` and `chatservice_pb2.py` file exist, run by typing the following commands in your terminal.
+
+### Server
+> $ python3 chatservice_server.py
+  
+### Client
+> $ python3 chatservice_client.py
+
+You can run multiple clients ay the same time by creating multiple processes. 
+
+### Wire Protocol:
+
+Op '0' = Account Login, e.g. 0|wayne --> User with ID wayne logged in (need to be created at first)
+
+Op '1' = Account Creation, e.g. 1|John --> Creates an account with username John
+
+Op '2' = List User, e.g., 2|J.hn --> returns list of user whose name is J*hn
+
+Op '3'  = Send Message to a particular user, e.g., 3|accountID|message --> Send a new message immediately to another account if online (send to mailbox if the other account is offline)
+
+All messages that are received during log off will be prompted once the user log in 
+
+Op '5' = Delete Account, e.g. 5| --> Delete Account and quit the client from the chat service
+
+Op 'X' = Logged off. Similar to delete account but the information is kept in the server so that people can still message you, and you can use '0' to relogin.
