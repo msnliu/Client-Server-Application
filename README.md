@@ -234,6 +234,7 @@ INFO:root:Starting server on [::]:50051
 > $ python client.py 
 
 Welcome to the chatroom! Please log into your account by 0 or create a new account by 1.
+
 1|wayne
 
 Account wayne has been created!
@@ -254,6 +255,7 @@ Your account has been deleted!
 > $ python client.py 
 
 Welcome to the chatroom! Please log into your account by 0 or create a new account by 1.
+
 1|mason
 
 Account mason has been created!
@@ -265,6 +267,7 @@ You have been successfully logged out!
 > $ python client.py 
 
 Welcome to the chatroom! Please log into your account by 0 or create a new account by 1.
+
 1|wayne
 
 Account wayne has been created!
@@ -288,10 +291,13 @@ You have been successfully logged out!
 > $ python client.py 
 
 Welcome to the chatroom! Please log into your account by 0 or create a new account by 1.
+
 0|mason
 
 wayne: hello
+
 wayne: hey
+
 You have been successfully logged in!
 
 5|
