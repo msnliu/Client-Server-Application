@@ -97,8 +97,12 @@ class Server:
             data = "Receiver: " +  str(receiver) + " doesn't exist \n"
         return data
     def pop_undelivered(self,id):
-        accountID = str(id)
-        user = self.accountName_table[accountID]
+        try:
+            accountID = str(id)
+            user = self.accountName_table[accountID]
+        except:
+            data = 'User not Found '
+            return data
         q = user.queue
         if q:
             data = f"undelivered message for user ID {accountID}: \n" 
