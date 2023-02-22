@@ -69,7 +69,7 @@ def read_handler(client_id, stub):
 def write_handler(client_id, stub):
     while True:
         message = input()
-        if message == "":
+        if message == "X":
             stub.LogOut(
                 LogOutRequest(
                     client_id = client_id
