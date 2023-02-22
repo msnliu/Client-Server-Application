@@ -26,8 +26,9 @@ def Main():
 				break
 			else:
 				s.send(ans.encode('ascii'))	
+				time.sleep(0.1)  # add a short delay after sending the data
 				continue
-		s.close()
+		s.shutdown(socket.SHUT_WR)  # close the write end of the socket
 
 	def receiver():
 		while True:
@@ -39,6 +40,7 @@ def Main():
 					print(str(data.decode('ascii')))
 			except:
 				break
+		s.close()
 
 	sender_thread = threading.Thread(target=sender)
 	receiver_thread = threading.Thread(target=receiver)

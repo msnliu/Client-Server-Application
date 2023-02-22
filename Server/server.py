@@ -1,10 +1,16 @@
 #Ref: https://www.geeksforgeeks.org/socket-programming-multi-threading-python/
 
 import socket
-from user import User
 import re
 from _thread import *
-
+import numpy as np
+class User:
+  def __init__(self, name):
+    self.name = name
+    self.ID = name + str(np.random.randint(0, 10000))
+    # self.connection = 
+    self.queue = []
+    self.active = True
 class Server:
     err_msg = 'Please give a valid input as instructed in the documentation'
     def __init__(self):
@@ -34,8 +40,9 @@ class Server:
             start_new_thread(self.threaded, (c,))
     def close_server(self):
         try:
+            self.s.shutdown(socket.SHUT_RDWR)
             self.s.close()
-            print('server is closed')
+            print ("Server closed")
         except:
             print("Server not started")
     def account_creation(self,username,c):
