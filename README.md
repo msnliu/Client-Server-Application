@@ -33,17 +33,17 @@ You can run multiple clients ay the same time by creating multiple processes.
 
 Op '0' = Account Login, e.g. 0|wayne123 --> User with ID wayne123 logged in (need to be created at first)
 
-Op '1' = Account Creation, e.g. 1|John --> Creates an account with username John, and an ID will be supplemented. (Avoid same user name)
+Op '1' = Account Creation, e.g. 1|John --> Creates an account with username John, and an ID will be supplemented. (Avoid same user name, and such format has to be followed and try to aviod adding '|' in the name)
 
 Op '2' = List User, e.g., 2|J.hn --> returns list of user whose name is J*hn. Or 2 --> returns list of all users
 
-Op '3'  = Send Message to a particular user, e.g., 3|accountID|Amount --> returns updated balance; If the user is not logged in
+Op '3'  = Send Message to a particular user, e.g., 3|accountID|Amount --> returns updated balance; If the user is not logged in, send message to his mailbox so that they are ready to be deliveried once upon request (will return a note if user does not exist)
 
-Op '4' = View underlivered message, e.g. 4|accountID --> View all undelivery message for a user with id accountID when he/she is logged off
+Op '4' = View underlivered message, e.g. 4|accountID --> View all undelivery message for a user with id accountID when he/she is logged off (will return a note if user does not exist)
 
-Op '5' = Delete Account, e.g. 5|accountID --> Delete Account with accountID
+Op '5' = Delete Account, e.g. 5|accountID --> Delete Account with accountID (will return a note if user does not exist)
 
-Op 'quit' or 'bye' = Logged off. Similar to delete account but the information is kept in the server so that people can still message you, and you can use Op '0' to relogin.
+Op 'bye' = Logged off. Similar to delete account but the information is kept in the server so that people can still message you in the mailbox, and you can use Op '0' to relogin.
 
 ### Test
 
