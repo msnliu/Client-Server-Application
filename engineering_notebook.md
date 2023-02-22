@@ -207,3 +207,21 @@ I also used the grpc_cli command-line tool to test the gRPC service. The grpc_cl
 
 ### Conclusion
 In conclusion, the code provides a basic implementation of a chat service using gRPC and asyncio. It uses the ChatService class to manage messages, and the Server class to handle client requests. The implementation uses asynchronous programming to allow the program to continue executing while I/O bound tasks are being performed. The code was tested using the client.py file and the grpc_cli command-line tool.
+
+# Comparison
+
+gRPC and Custom Wire Protocol both have their advantages and disadvantages when it comes to complexity, performance, and buffer size.
+
+In terms of complexity, gRPC provides a high-level API for building distributed systems. It abstracts away many of the details of building distributed systems, including connection management, load balancing, and service discovery. This makes it easier to build distributed systems, but it can also make it harder to understand what is happening under the hood.
+
+On the other hand, building a custom wire protocol using sockets and threads requires more low-level programming. Developers need to manage connections, message framing, and error handling themselves. This can result in more code and a steeper learning curve, but it also gives developers more control and a deeper understanding of what is happening in the system.
+
+In terms of performance, gRPC is designed to be fast and efficient. It uses binary serialization and compression to reduce the size of messages being sent between the client and server, and it uses HTTP/2 to multiplex requests and responses over a single connection. This can result in better performance and lower latency than a custom wire protocol implemented using sockets and threads.
+
+However, it is worth noting that a well-designed custom wire protocol can also be very performant. By carefully managing message framing and using efficient serialization and compression techniques, developers can achieve good performance with a custom wire protocol.
+
+Finally, when it comes to buffer size, gRPC has some advantages over a custom wire protocol. Because gRPC uses binary serialization and compression, it can often send smaller messages between the client and server. This can be particularly important in low-bandwidth environments, where every byte counts.
+
+However, it is also worth noting that a well-designed custom wire protocol can also be efficient with buffer size. By using efficient message framing and compression techniques, developers can reduce the size of messages being sent over the wire.
+
+In summary, gRPC and custom wire protocols each have their own strengths and weaknesses when it comes to complexity, performance, and buffer size. While gRPC is generally easier to use and can be more performant, a custom wire protocol can offer more control and be just as performant when implemented correctly. Ultimately, the choice between gRPC and a custom wire protocol will depend on the specific requirements of the system being built.
