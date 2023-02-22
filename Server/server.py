@@ -21,6 +21,9 @@ class Server:
         self.port = 2023
         # p_lock = threading.Lock()
     def start_server(self):
+        """
+        Start the chat room server, listening on the given host and port.
+        """
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         s.bind((self.host, self.port))
@@ -37,7 +40,10 @@ class Server:
             c.send(data.encode('ascii'))
             # Start a new thread and return its identifier
             start_new_thread(self.threaded, (c,))
-    def close_server(self):
+    def close_server(self):        
+        """
+        Stop the chat room server.
+        """
         try:
             self.s.shutdown(socket.SHUT_RDWR)
             self.s.close()
@@ -45,6 +51,16 @@ class Server:
         except:
             print("Server not started")
     def account_creation(self,username,c):
+        """
+        Create a new account with the given username and connection.
+
+        Parameters:
+        username (str): The username for the new account.
+        c (socket): The connection to the client.
+
+        Returns:
+        str: A message indicating the status of the account creation.
+        """
         new_user = User(username)
         self.name_list.append(username)
         accountID = str(new_user.ID)
@@ -57,6 +73,15 @@ class Server:
         return data
 
     def list_accounts(self,pattern):
+        """
+        List the accounts whose usernames match the given pattern.
+
+        Parameters:
+        pattern (str): The pattern to match usernames against.
+
+        Returns:
+        str: A message listing the accounts whose usernames match the pattern.
+        """
         accountPre = str(pattern)
         rematch = "^" + accountPre + "$"
         print("key: " + str(pattern) + "\n")
@@ -75,6 +100,17 @@ class Server:
             data = "Account matched to: " +  str(accountPre) + " doesn't exist \n"
         return data
     def send_message(self,name,msg,c):
+        """
+        Send message to a speific account accounts with a given username.
+
+        Parameters:
+        name (str): The name (NOT ID) of the recipient
+        msg (str): the message sent from the host client
+        c (socket): The connection to the client.
+
+        Returns:
+        str: A message showing whether to message is deliveried succesfully; 
+        """
         receiver = name
         if receiver in self.name_list:
             for id, user in self.accountName_table.items():
@@ -96,6 +132,15 @@ class Server:
             data = "Receiver: " +  str(receiver) + " doesn't exist \n"
         return data
     def pop_undelivered(self,id):
+        """
+        Delivered queued message to a particular user
+
+        Parameters:
+        id (str): The user ID to be delivered
+
+        Returns:
+        str: A message showing the status of the action
+        """
         try:
             accountID = str(id)
             user = self.accountName_table[accountID]
@@ -112,6 +157,15 @@ class Server:
             data = "No new messages\n"
         return data
     def delete_account(self,id):
+        """
+        Delete a particular user from the sever permanantly
+
+        Parameters:
+        id (str): The user ID to be delivered
+
+        Returns:
+        str: A message showing the status of the actions
+        """
         accountID = str(id)
         try:
             user = self.accountName_table[accountID]
@@ -137,6 +191,20 @@ class Server:
         return data
     # thread function
     def threaded(self,c):
+        """
+        This method is used to handle communication between the server and a client in a separate thread. It receives data from the client,
+        parses the data, and sends the appropriate response back to the client. It also manages the login status of users and keeps track of
+        undelivered messages.
+
+        Parameters:
+            c (socket): A socket object representing the connection with a client.
+
+        Returns:
+            None
+
+        Raises:
+            No exceptions are explicitly raised, but if an error occurs during the execution of the method, an error message is sent back to the client.
+        """
         while True:
             data_list=[]
             # data received from client
