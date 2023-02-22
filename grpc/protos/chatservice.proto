@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+message ChatMessageRequest {
+    uint64 thread_id = 1;
+    string message = 2;
+    string sender_id = 3;
+    string recipient_id = 4;
+}
+
+message ChatMessageResponse {
+    uint64 id = 1;
+}
+
+message ChatMessage {
+    uint64 id = 1;
+    uint64 thread_id = 2;
+    string message = 3;
+    string sender_id = 4;
+    string recipient_id = 5;
+}
+
+message ChatClient {
+    string recipient_id = 1;
+}
+
+message DeleteAccountRequest {
+    string client_id = 1;
+}
+
+message DeleteAccountResponse {
+    uint64 id = 1;
+}
+
+message CreateAccountRequest {
+    string client_id = 1;
+}
+
+message CreateAccountResponse {
+    uint64 id = 1;
+}
+
+message WildCardRequest {
+    string client_id = 1;
+    string pattern = 2;
+}
+
+message WildCardResponse {
+    uint64 id = 1;
+}
+
+message LogOutRequest {
+    string client_id = 1;
+}
+
+message LogOutResponse {
+    uint64 id = 1;
+}
+
+message LogInRequest {
+    string client_id = 1;
+}
+
+message LogInResponse {
+    uint64 id = 1;
+}
+
+service ChatService {
+    rpc SendMessage(ChatMessageRequest) returns (ChatMessageResponse);
+    rpc ReceiveMessages(ChatClient) returns (stream ChatMessage);
+    rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse);
+    rpc DeleteAccount(DeleteAccountRequest) returns (DeleteAccountResponse);
+    rpc WildCard(WildCardRequest) returns (WildCardResponse);
+    rpc LogOut(LogOutRequest) returns (LogOutResponse);
+    rpc LogIn(LogOutRequest) returns (LogInResponse);
+    // rpc ConnectDuplexStream(stream ChatMessageRequest) returns (stream ChatMessage);
+}
+
+// Command to generate python files:
+// python3 -m grpc_tools.protoc -Iprotos --python_out=. --grpc_python_out=. protos/chatservice.proto
