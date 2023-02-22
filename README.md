@@ -24,7 +24,7 @@ Once you are in the directory where `server.py` or `client.py` file exists, run 
 
   
 ### Client
-> $ python client.py hostname
+> $ python client.py 
 
 You can run multiple clients ay the same time by creating multiple processes. 
 
@@ -35,13 +35,13 @@ Op '0' = Account Login, e.g. 0|wayne123 --> User with ID wayne123 logged in (nee
 
 Op '1' = Account Creation, e.g. 1|John --> Creates an account with username John, and an ID will be supplemented. (Avoid same user name)
 
-Op '2' = List User, e.g., 2|J.hn --> returns list of user whose name is J*hn. Or 2 --> returns list of all users
+Op '2' = List User, e.g., 2|J.hn --> list of user whose name is J*hn. Or 2 --> list of all users
 
-Op '3'  = Send Message to a particular user, e.g., 3|accountID|Amount --> returns updated balance
+Op '3'  = Send Message to a particular user, e.g., 3|accountID|hello --> send hello to someone whose id is accountID
 
-Op '4' = View Balance, e.g. 4|accountID --> returns balance
+Op '4' = View undelivered message for a particular account, e.g. 4|accountID --> returns balance
 
-Op '5' = View Balance, e.g. 4|accountID --> returns balance
+Op '5' = delete an account, e.g. 4|accountID --> returns balance
 
 ### Test
 
@@ -136,7 +136,7 @@ bye
 </pre>
 
 **Client 2**
-> $ python client.py localhost
+> $ python client.py 
 <pre>
 To get started on this chat room, please create or login your account first and type command as instructed in the documentation 
 
