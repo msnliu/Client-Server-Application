@@ -1,4 +1,10 @@
 Welcome to the chatroom! Please log into your account by 0 or create a new account by 1.
-Invalid request, please try again!
+mason: hi
 Account wayne has been created!
-Account matched: wayne
+Quitting!
+Welcome to the chatroom! Please log into your account by 0 or create a new account by 1.
+Account mason has been created!
+Account matched: wayne,mason
+Your message has been sent!
+Your account has been deleted!
+Quitting!

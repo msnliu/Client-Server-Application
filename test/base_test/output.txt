@@ -1,6 +1,5 @@
 
 To get started on this chat room, please create or login your account first and type command as instructed in the documentation 
-
 Success New Account Creation! Your new Account ID: mason123
 
 

@@ -1,6 +1,6 @@
 python3 ../../grpc/chatservice_client.py << EOF
-1|mason
+0|wayne
 2|.+?
-3|wayne|hi
+3|mason|hi
 5
 EOF
