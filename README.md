@@ -225,14 +225,14 @@ Note that You do not have to interact with the server, the message below are jus
 
 **Server**
 > $ python3 chatservice_server.py
-<pre>
+
 INFO:root:Starting server on [::]:50051
-<pre>
+
+
 
 **Client 1**
 > $ python client.py 
 
-<pre>
 Welcome to the chatroom! Please log into your account by 0 or create a new account by 1.
 1|wayne
 
@@ -249,12 +249,10 @@ Recipient is not found!
 5|
 
 Your account has been deleted!
-</pre>
 
 **Client 2**
 > $ python client.py 
 
-<pre>
 Welcome to the chatroom! Please log into your account by 0 or create a new account by 1.
 1|mason
 
@@ -263,11 +261,9 @@ Account mason has been created!
 X
 
 You have been successfully logged out!
-</pre>
 
 > $ python client.py 
 
-<pre>
 Welcome to the chatroom! Please log into your account by 0 or create a new account by 1.
 1|wayne
 
@@ -288,11 +284,9 @@ Invalid request, please try again!
 X
 
 You have been successfully logged out!
-<pre>
 
 > $ python client.py 
 
-<pre>
 Welcome to the chatroom! Please log into your account by 0 or create a new account by 1.
 0|mason
 
@@ -303,4 +297,3 @@ You have been successfully logged in!
 5|
 
 Your account has been deleted!
-</pre>
