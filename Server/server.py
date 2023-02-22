@@ -3,7 +3,6 @@
 import socket
 import re
 from _thread import *
-import numpy as np
 class User:
   def __init__(self, name):
     self.name = name

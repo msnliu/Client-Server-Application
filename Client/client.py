@@ -1,13 +1,8 @@
 ##Ref: https://www.geeksforgeeks.org/socket-programming-multi-threading-python/
-# Import socket module
-# import socket
-
 import threading
 import socket 
 import time
 import sys
-
-
 def Main():
 	host = "127.0.0.1"
 	s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
