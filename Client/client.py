@@ -11,6 +11,12 @@ def Main():
 	s.connect((host,port))
 		
 	def sender():
+		"""
+		This function continuously reads input from the user and sends it to the server.
+		If the user inputs "bye" or "quit", the function will break the loop and shutdown 
+		the write end of the socket, and then exit the system. The function adds a short 
+		delay after sending the data. 
+		"""
 		while True:
 		# message sent to server
 		# message received from server
@@ -27,6 +33,11 @@ def Main():
 		sys.exit()
 
 	def receiver():
+		"""
+		This function continuously listens for incoming messages from the server. 
+		If there is incoming data, it will print the received message. If there is an error,
+		the loop will break and the function will exit the system. 
+		"""
 		while True:
 			try:
 				data = s.recv(1024)

@@ -33,21 +33,21 @@ You can run multiple clients ay the same time by creating multiple processes.
 
 Op '0' = Account Login, e.g. 0|wayne123 --> User with ID wayne123 logged in (need to be created at first)
 
-Op '1' = Account Creation, e.g. 1|John --> Creates an account with username John, and an ID will be supplemented. (Avoid same user name)
+Op '1' = Account Creation, e.g. 1|John --> Creates an account with username John, and an ID will be supplemented. (Avoid same user name, and such format has to be followed and try to aviod adding '|' in the name)
 
 Op '2' = List User, e.g., 2|J.hn --> returns list of user whose name is J*hn. Or 2 --> Returns list of all users
 
 Op '3'  = Send Message to a particular user, e.g., 3|accountID|message --> Send a new message immediately to another account if online (send to mailbox if the other account is offline)
 
-Op '4' = View underlivered message, e.g. 4|accountID --> View all undelivery message for a user with id accountID when he/she is logged off
+Op '4' = View underlivered message, e.g. 4|accountID --> View all undelivery message for a user with id accountID when he/she is logged off (will return a note if user does not exist)
 
-Op '5' = Delete Account, e.g. 5|accountID --> Delete Account with accountID
+Op '5' = Delete Account, e.g. 5|accountID --> Delete Account with accountID (will return a note if user does not exist)
 
-Op 'quit' or 'bye' = Logged off. Similar to delete account but the information is kept in the server so that people can still message you, and you can use Op '0' to relogin.
+Op 'bye' = Logged off. Similar to delete account but the information is kept in the server so that people can still message you in the mailbox, and you can use Op '0' to relogin.
 
 ### Test
 
-In the test fold, first run the server scripts:
+In the test folder, first run the server scripts:
 
 > $ bash server.sh
 
@@ -60,6 +60,12 @@ Finally, run pytest on the test.py
 > $ pytest test.py
 
 Note that if you can the pre-defined instrucitons on client1/2.sh, you also need to change the tests on test.py to make it right.
+
+You can also run the command to time the test scripts
+
+> $ bash time.sh
+
+This will output a file called time.txt, which will be used for performance comparison with the gRPC counterparts.
 
 ### Example
 For server and client running on the same system
