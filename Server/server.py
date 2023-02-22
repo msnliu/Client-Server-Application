@@ -1,11 +1,9 @@
 #Ref: https://www.geeksforgeeks.org/socket-programming-multi-threading-python/
 
 import socket
-import random
 from user import User
 import re
 from _thread import *
-import threading
 
 class Server:
     err_msg = 'Please give a valid input as instructed in the documentation'
@@ -15,7 +13,7 @@ class Server:
         self.connections = {} # from id to connections
         self.connections_id = {}  # from connections to id
         self.host = "127.0.0.1"
-        self.port = 2048
+        self.port = 2023
         # p_lock = threading.Lock()
     def start_server(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -30,10 +28,16 @@ class Server:
             # establish connection with client
             c, addr = s.accept()
             print('Connected to :', addr[0], ':', addr[1])
-            data = "Please Create or login your account "
+            data = "To get started on this chat room, please create or login your account first and type command as instructed in the documentation \n"
             c.send(data.encode('ascii'))
             # Start a new thread and return its identifier
             start_new_thread(self.threaded, (c,))
+    def close_server(self):
+        try:
+            self.s.close()
+            print('server is closed')
+        except:
+            print("Server not started")
     def account_creation(self,username,c):
         new_user = User(username)
         self.name_list.append(username)
