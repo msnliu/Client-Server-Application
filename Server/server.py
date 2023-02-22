@@ -1,12 +1,15 @@
 #Ref: https://www.geeksforgeeks.org/socket-programming-multi-threading-python/
 
 import socket
-import random
-from user import User
 import re
 from _thread import *
-import threading
-
+class User:
+  def __init__(self, name):
+    self.name = name
+    self.ID = name + str(123)
+    # self.connection = 
+    self.queue = []
+    self.active = True
 class Server:
     err_msg = 'Please give a valid input as instructed in the documentation'
     def __init__(self):
@@ -15,7 +18,7 @@ class Server:
         self.connections = {} # from id to connections
         self.connections_id = {}  # from connections to id
         self.host = "127.0.0.1"
-        self.port = 2048
+        self.port = 2023
         # p_lock = threading.Lock()
     def start_server(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -30,10 +33,17 @@ class Server:
             # establish connection with client
             c, addr = s.accept()
             print('Connected to :', addr[0], ':', addr[1])
-            data = "Please Create or login your account "
+            data = "To get started on this chat room, please create or login your account first and type command as instructed in the documentation \n"
             c.send(data.encode('ascii'))
             # Start a new thread and return its identifier
             start_new_thread(self.threaded, (c,))
+    def close_server(self):
+        try:
+            self.s.shutdown(socket.SHUT_RDWR)
+            self.s.close()
+            print ("Server closed")
+        except:
+            print("Server not started")
     def account_creation(self,username,c):
         new_user = User(username)
         self.name_list.append(username)
@@ -74,20 +84,24 @@ class Server:
             message = str(sender) + " sends: "+  str(msg) + "\n"
             if self.accountName_table[rscv_ID].active:
                 client = self.connections[rscv_ID]
-                data = "message delivered\n"
-                client.send(message.encode('ascii'))
-                print("Sender " +  str(sender) + " sends a new message " + str(msg) + " to " + str(receiver) + "\n")
+                data = "Sender " +  str(sender) + " sends a new message " + str(msg) + " to " + str(receiver) + "\n"
+                client.send((str(sender) + ": " + str(msg)).encode('ascii'))
+                print(data)
             else:
-                data = "message delivered to mailbox\n"
+                data = "message from " + sender + " has been delivered to " + receiver + "'s mailbox\n"
                 self.accountName_table[rscv_ID].queue.append(message)
-                print("message from " + sender + " has been delivered to " + receiver + "'s mailbox\n")
+                print(data)
         else:
             print("Receiver doesnt exist: " + str(receiver)  + "\n")
             data = "Receiver: " +  str(receiver) + " doesn't exist \n"
         return data
     def pop_undelivered(self,id):
-        accountID = str(id)
-        user = self.accountName_table[accountID]
+        try:
+            accountID = str(id)
+            user = self.accountName_table[accountID]
+        except:
+            data = 'User not Found '
+            return data
         q = user.queue
         if q:
             data = f"undelivered message for user ID {accountID}: \n" 
@@ -110,10 +124,14 @@ class Server:
             return data
         else:
             self.name_list.remove(name)
-            old_c = self.connections[accountID]
-            del self.connections_id[old_c]
-            del self.connections[accountID]
+            
             del self.accountName_table[accountID]
+            try:
+                old_c = self.connections[accountID]
+                del self.connections_id[old_c]
+                del self.connections[accountID]
+            except:
+                pass
         print("Account ID: " +  str(accountID) + " has been deleted" + "\n")
         data = "Your account has been deleted\n"
         return data
@@ -180,7 +198,8 @@ class Server:
                     msg = str(data_list[2])
                     data = self.send_message(username,msg,c)
                     c.send(data.encode('ascii'))
-                except:
+                except Exception as e: 
+                    print(e)
                     c.send(self.err_msg.encode('ascii'))
                 #list accounts
             elif opcode == '4':
@@ -196,7 +215,8 @@ class Server:
                     userid = str(data_list[1])
                     data = self.delete_account(userid)
                     c.send(data.encode('ascii'))
-                except:
+                except Exception as e: 
+                    print(e)
                     c.send(self.err_msg.encode('ascii'))
             else:
                 c.send(self.err_msg.encode('ascii'))

@@ -1,0 +1,1 @@
+{ bash client1.sh ; bash client2.sh; } > output.txt
