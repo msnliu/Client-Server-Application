@@ -1,8 +1,7 @@
 python ../../Client/client.py << EOF
-1|wayne
-2
-3|mason|hi
-5|wayne123
-2|w.yne
+0|mason123
+4|mason123
+3|wayne|hi
+5|mason123
 bye
 EOF

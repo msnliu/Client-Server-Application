@@ -4,31 +4,15 @@ To get started on this chat room, please create or login your account first and 
 Success New Account Creation! Your new Account ID: mason123
 
 
-Showing all accounts: mason
+Account matched: mason
 
 
 No new messages
 
 
-Your account has been deleted
-
-
-Showing all accounts: 
-
-
-Success New Account Creation! Your new Account ID: mason123
-
-
-Showing all accounts: mason
-
-
-Receiver: nobody doesn't exist 
-
-
-User Not Found! 
-
 
 To get started on this chat room, please create or login your account first and type command as instructed in the documentation 
+
 Success New Account Creation! Your new Account ID: wayne123
 
 
@@ -38,7 +22,16 @@ Showing all accounts: mason,wayne
 message from wayne has been delivered to mason's mailbox
 
 
-Please check your mailbox before deleting your account! 
+Your account has been deleted
+
+
+Account matched to: w.yne doesn't exist 
+
+
+
+To get started on this chat room, please create or login your account first and type command as instructed in the documentation 
+
+user : mason is now logged in
 
 
 undelivered message for user ID mason123: 
@@ -46,19 +39,9 @@ wayne sends: hi
 
 
 
+Receiver: wayne doesn't exist 
+
+
 Your account has been deleted
-
-
-Showing all accounts: wayne
-
-
-Success New Account Creation! Your new Account ID: lol123
-
-
-lol: hey
-Sender lol sends a new message hey to wayne
-
-
-Showing all accounts: wayne,lol
 
 
