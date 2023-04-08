@@ -3,23 +3,54 @@
 import socket
 import re
 from _thread import *
-class User:
-  def __init__(self, name):
-    self.name = name
-    self.ID = name + str(123)
-    # self.connection = 
-    self.queue = []
-    self.active = True
+import pandas as pd
+import os
 class Server:
     err_msg = 'Please give a valid input as instructed in the documentation'
     def __init__(self):
-        self.accountName_table={} # ID to user object
-        self.name_list = [] # Username list
-        self.connections = {} # from id to connections
-        self.connections_id = {}  # from connections to id
+        self.account_file = 'accounts.csv'
+        self.message_file = 'messages.csv'
         self.host = "127.0.0.1"
         self.port = 2023
+        self.active_connections = {}
+
+        if not os.path.exists(self.account_file):
+            columns = ['Username', 'ID', 'Connection_Socket', 'Active_Status', 'Queue']
+            pd.DataFrame(columns=columns).to_csv(self.account_file, index=False)
+
+        if not os.path.exists(self.message_file):
+            columns = ['Sender', 'Receiver', 'Message', 'Time']
+            pd.DataFrame(columns=columns).to_csv(self.message_file, index=False)
         # p_lock = threading.Lock()
+    def read_accounts_csv(self):
+        return pd.read_csv(self.account_file)
+
+    def write_accounts_csv(self, data):
+        data.to_csv(self.account_file, index=False)
+
+    def read_messages_csv(self):
+        return pd.read_csv(self.message_file)
+
+    def write_messages_csv(self, data):
+        data.to_csv(self.message_file, index=False)
+    def get_connection_by_socket_string(self, socket_string):
+        if socket_string in self.active_connections:
+            return self.active_connections[socket_string]
+
+        ip, port = socket_string.split(':')
+        addr = (ip, int(port))
+        connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        connection.connect(addr)
+        self.active_connections[socket_string] = connection
+        return connection
+
+    def close_connection(self, connection):
+        socket_string = self.store_socket_as_string(connection)
+        if socket_string in self.active_connections:
+            del self.active_connections[socket_string]
+        connection.close()
+
+
     def start_server(self):
         """
         Start the chat room server, listening on the given host and port.
@@ -205,6 +236,7 @@ class Server:
         Raises:
             No exceptions are explicitly raised, but if an error occurs during the execution of the method, an error message is sent back to the client.
         """
+        userid = None
         while True:
             data_list=[]
             # data received from client
