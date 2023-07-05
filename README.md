@@ -1,4 +1,4 @@
-# cs262-HW1 Guangya Wan & Zongjun Liu
+# Client Server Application Guangya Wan & Zongjun Liu
 
 ## About
 This code implements a chat server using socket programming in Python with multi-threading. It allows the creation of new user accounts, searching for existing accounts, sending messages to other users, and deleting user accounts. The chat server is capable of handling multiple clients at the same time. Two methods(custom wire proctol and gRPC) were implemented 
